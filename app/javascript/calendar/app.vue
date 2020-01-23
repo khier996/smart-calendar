@@ -8,9 +8,9 @@
 <script>
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
-
-import "@fullcalendar/core/main.css";
-import "@fullcalendar/daygrid/main.css";
+import "@fullcalendar/core/main.css"
+import "@fullcalendar/daygrid/main.css"
+import axios from 'Calendar/axios'
 
 export default {
   components: { FullCalendar },
@@ -24,7 +24,10 @@ export default {
 
   mounted() {
     this.api = this.$refs.fullCalendar.getApi()
-    setTimeout(() => this.api.render()) // some weird issue with fullcalendar referenced here - https://github.com/angular-ui/ui-calendar/issues/397
+    setTimeout(() => this.api.render()) // some weird issue with rendering referenced here - https://github.com/angular-ui/ui-calendar/issues/397
+
+    axios.internal.post('/api/v1/events')
+      .then(res => console.log(res))
   }
 }
 </script>
