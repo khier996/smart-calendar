@@ -1,13 +1,17 @@
 <template>
   <div id="app">
     <p class="title">Calendar</p>
-    <FullCalendar ref="fullCalendar" defaultView="dayGridMonth" :plugins="calendarPlugins" />
+    <FullCalendar ref="fullCalendar"
+                  defaultView="dayGridMonth"
+                  :plugins="calendarPlugins"
+                  @dateClick="handleDateClick"/>
   </div>
 </template>
 
 <script>
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 import "@fullcalendar/core/main.css"
 import "@fullcalendar/daygrid/main.css"
 import axios from 'Calendar/axios'
@@ -17,8 +21,14 @@ export default {
 
   data: function () {
     return {
-      calendarPlugins: [ dayGridPlugin ],
+      calendarPlugins: [ dayGridPlugin, interactionPlugin ],
       api: undefined
+    }
+  },
+
+  methods: {
+    handleDateClick(e) {
+      console.log(e)
     }
   },
 
