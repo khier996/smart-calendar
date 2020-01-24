@@ -10,6 +10,7 @@ const aliasConfig = {
     // in css files we need also to add "~" to the shortcut name: @import '~SomeVariable/some_file.js'
     alias: {
       Javascript: path.resolve(__dirname, '../../app/javascript/'),
+      CommonStyles: path.resolve(__dirname, '../../app/javascript/common_styles'),
       Calendar: path.resolve(__dirname, '../../app/javascript/calendar'),
     }
   }
