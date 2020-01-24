@@ -4,7 +4,9 @@
     <FullCalendar ref="fullCalendar"
                   defaultView="dayGridMonth"
                   :plugins="calendarPlugins"
+                  :events="calendarEvents"
                   @dateClick="handleDateClick"/>
+    <create-event-popup v-if="isOpenCreatePopup" @createEvent="createEvent" />
   </div>
 </template>
 
@@ -15,20 +17,33 @@ import interactionPlugin from '@fullcalendar/interaction'
 import "@fullcalendar/core/main.css"
 import "@fullcalendar/daygrid/main.css"
 import axios from 'Calendar/axios'
+import moment from 'moment'
+import CreateEventPopup from 'Calendar/create_event_popup'
 
 export default {
-  components: { FullCalendar },
+  components: { FullCalendar, CreateEventPopup },
 
   data: function () {
     return {
       calendarPlugins: [ dayGridPlugin, interactionPlugin ],
-      api: undefined
+      api: undefined,
+      chosenDate: undefined,
+      isOpenCreatePopup: false,
+      calendarEvents: [
+        { title: 'Event Now', start: new Date(), end: '2020-01-28' }
+      ]
     }
   },
 
   methods: {
     handleDateClick(e) {
-      console.log(e)
+      this.chosenDate = e.dateStr
+      this.isOpenCreatePopup = true
+    },
+
+    createEvent(event) {
+      event.start = this.chosenDate
+      event.end = moment(event.start).add(event.duration - 1, 'days').format('YYYY-MM-DD')
     }
   },
 
