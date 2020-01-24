@@ -12,6 +12,7 @@ const aliasConfig = {
       Javascript: path.resolve(__dirname, '../../app/javascript/'),
       CommonStyles: path.resolve(__dirname, '../../app/javascript/common_styles'),
       Calendar: path.resolve(__dirname, '../../app/javascript/calendar'),
+      CalendarStyles: path.resolve(__dirname, '../../app/javascript/calendar/styles/index.scss')
     }
   }
 }
