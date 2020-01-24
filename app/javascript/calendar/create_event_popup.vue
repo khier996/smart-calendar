@@ -18,7 +18,8 @@
         <input v-model="event.duration"
                type="number"
                class="create-event-input"
-               required>
+               required
+               min="0">
       </div>
 
       <button @click="submit" class="cal-btn">Create</button>
