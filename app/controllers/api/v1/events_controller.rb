@@ -10,7 +10,7 @@ module Api
         event = Event.new(event_params)
         if event.valid?
           event.save
-          render json: { success: true, event: event }
+          render json: event
         else
           render json: { succes: false }, status: 400
         end

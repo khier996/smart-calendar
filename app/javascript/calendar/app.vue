@@ -6,7 +6,9 @@
                   :plugins="calendarPlugins"
                   :events="calendarEvents"
                   @dateClick="handleDateClick"/>
-    <create-event-popup v-if="isOpenCreatePopup" @createEvent="createEvent" />
+    <create-event-popup v-if="isOpenCreatePopup"
+                        @createEvent="createEvent"
+                        @close="closeCreatePopup" />
   </div>
 </template>
 
@@ -16,9 +18,9 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import "@fullcalendar/core/main.css"
 import "@fullcalendar/daygrid/main.css"
-import axios from 'Calendar/axios'
-import moment from 'moment'
 import CreateEventPopup from 'Calendar/create_event_popup'
+import apis from 'Calendar/apis'
+import eventPreparer from 'Calendar/utils/event_preparer'
 
 export default {
   components: { FullCalendar, CreateEventPopup },
@@ -26,33 +28,51 @@ export default {
   data: function () {
     return {
       calendarPlugins: [ dayGridPlugin, interactionPlugin ],
-      api: undefined,
+      calendarApi: undefined,
       chosenDate: undefined,
       isOpenCreatePopup: false,
-      calendarEvents: [
-        { title: 'Event Now', start: new Date(), end: '2020-01-28' }
-      ]
+      calendarEvents: []
     }
   },
 
   methods: {
+    fetchEvents() {
+      apis.fetchEvents()
+        .then(res => {
+          let events = res.data.map(serverEvent => {
+            return eventPreparer.prepareForCalendar(serverEvent)
+          })
+          console.log(events)
+          this.calendarEvents = events
+        })
+    },
+
     handleDateClick(e) {
       this.chosenDate = e.dateStr
       this.isOpenCreatePopup = true
     },
 
-    createEvent(event) {
-      event.start = this.chosenDate
-      event.end = moment(event.start).add(event.duration - 1, 'days').format('YYYY-MM-DD')
+    createEvent(calendarEvent) {
+      calendarEvent.start = this.chosenDate
+      let serverEvent = eventPreparer.prepareForServer(calendarEvent)
+      apis.createEvent(serverEvent)
+        .then(res => {
+          console.log(res)
+          let calendarEvent = eventPreparer.prepareForCalendar(res.data)
+          this.calendarEvents.push(calendarEvent)
+          this.closeCreatePopup()
+        })
+    },
+
+    closeCreatePopup() {
+      this.isOpenCreatePopup = false
     }
   },
 
   mounted() {
-    this.api = this.$refs.fullCalendar.getApi()
-    setTimeout(() => this.api.render()) // some weird issue with rendering referenced here - https://github.com/angular-ui/ui-calendar/issues/397
-
-    axios.internal.post('/api/v1/events')
-      .then(res => console.log(res))
+    this.calendarApi = this.$refs.fullCalendar.getApi()
+    setTimeout(() => this.calendarApi.render()) // some weird issue with rendering referenced here - https://github.com/angular-ui/ui-calendar/issues/397
+    this.fetchEvents()
   }
 }
 </script>

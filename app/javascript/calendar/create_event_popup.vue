@@ -1,6 +1,6 @@
 <template>
-  <div class="create-event-popup-veil">
-    <form class="create-event-popup">
+  <div class="create-event-popup-veil" @click="closePopup">
+    <form class="create-event-popup" @click.stop>
       <div class="create-event-input-wrapper">
         <div class="create-event-input-title">
           Description
@@ -36,6 +36,10 @@ export default {
   },
 
   methods: {
+    closePopup() {
+      this.$emit('close')
+    },
+
     submit(e) {
       e.preventDefault()
       if (e.currentTarget.form.reportValidity()) {
