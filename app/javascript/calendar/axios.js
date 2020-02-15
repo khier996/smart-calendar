@@ -5,7 +5,6 @@ window.calendarPendingRequests = 0
 
 const internalApiInstance = axios.create()
 internalApiInstance.interceptors.request.use(config => {
-  debugger
   const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
   config.headers.post['X-CSRF-Token'] = token
   config.headers.put['X-CSRF-Token'] = token
